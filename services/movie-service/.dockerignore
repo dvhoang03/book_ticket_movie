@@ -1,0 +1,13 @@
+# Các thư mục không cần thiết
+node_modules
+dist
+logs
+npm-debug.log
+Dockerfile
+.dockerignore
+
+# Các tệp và thư mục khác mà bạn không muốn bao gồm trong Docker image
+*.md
+.git
+.gitignore
+.env

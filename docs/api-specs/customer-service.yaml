@@ -1,0 +1,24 @@
+openapi: 3.0.0
+paths:
+  /:
+    get:
+      operationId: AppController_getHello
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags:
+        - App
+info:
+  title: API Documentation
+  description: >-
+    This API allows you to interact with the service. API service is hosted at
+    http://localhost:3004
+  version: '1.0'
+  contact: {}
+tags:
+  - name: ticket
+    description: ''
+servers: []
+components:
+  schemas: {}

@@ -1,0 +1,32 @@
+spring:
+  application:
+    name: notification-service
+
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
+    virtual-host: /
+
+  mail:
+    host: "smtp.gmail.com"
+    port: "587"
+    username: "lebom1402@gmail.com"
+    password: "kjbfohxsarrtmqbf"
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+server:
+  port: 3006
+
+open:
+  api:
+    title: "Notification-service document"
+    version: "v1.0.0"
+    description: "Mo ta API-doc"
+    serverUrl: "http://localhost:3006"

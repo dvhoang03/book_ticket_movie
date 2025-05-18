@@ -1,0 +1,87 @@
+<!-- Trang 3: Chọn ghế ngồi -->
+<!-- seat.html -->
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Chọn ghế</title>
+    <style>
+        .seat {
+            width: 30px;
+            height: 30px;
+            background: #ccc;
+            margin: 5px;
+            display: inline-block;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .selected {
+            background: green;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Chọn ghế</h1>
+    <div id="seat-container"></div>
+    <br>
+    <button onclick="goToConfirm()">Tiếp tục</button>
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const movie = params.get('movie');
+        const cinema = params.get('cinema');
+        const time = params.get('time');
+        const showtimeId = params.get('showtimeId');
+
+        const seatContainer = document.getElementById('seat-container');
+        let selectedSeats = [];
+        let totalPrice = 0;
+
+        fetch(`http://localhost:8080/ticker-booking/seat/${showtimeId}`)
+            .then(res => res.json())
+            .then(seats => {
+                seats.forEach(seatData => {
+                    console.log(seatData);
+                    
+                    const seat = document.createElement('div');
+                    seat.className = 'seat';
+                    seat.innerText = seatData.id;
+
+                    if (seatData.status !== 'AVAILABLE') {
+                        seat.style.background = 'red';
+                        seat.style.cursor = 'not-allowed';
+                        seat.title = 'Đã được đặt';
+                    } else {
+                        seat.onclick = () => {
+                            seat.classList.toggle('selected');
+                            if (selectedSeats.includes(seatData.id)) {
+                                selectedSeats = selectedSeats.filter(s => s !== seatData.id);
+                            } else {
+                                selectedSeats.push(seatData.id);
+                                totalPrice += seatData.price;
+                            }
+                            
+                        };
+                    }
+
+                    seatContainer.appendChild(seat);
+                    
+                });
+            })
+            .catch(err => {
+                console.error("Lỗi khi tải danh sách ghế:", err);
+            });
+
+        function goToConfirm() {
+            if (selectedSeats.length === 0) return alert("Hãy chọn ít nhất 1 ghế!");   
+            
+            localStorage.setItem('seatIds', selectedSeats);
+            window.location.href = `confirm.html?movie=${movie}&cinema=${cinema}&showtimeId=${showtimeId}&time=${time}&seats=${selectedSeats.join(',')}&totalPrice=${totalPrice}`;
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,68 @@
+<!-- Trang 1: Danh sách phim -->
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Đặt vé xem phim</title>
+    <style>
+        body {
+            font-family: Arial;
+            padding: 20px;
+        }
+
+        .movie {
+            cursor: pointer;
+            margin: 10px 0;
+            color: blue;
+        }
+    </style>
+</head>
+
+<!-- <body>
+    <h1>Danh sách phim</h1>
+    <div class="movie" onclick="location.href='detail.html?movie=1'">Phim 1: Người Nhện</div>
+    <div class="movie" onclick="location.href='detail.html?movie=2'">Phim 2: Avatar</div>
+
+
+</body> -->
+
+<body>
+    <h1>Danh sách phim</h1>
+    <div id="movie-list">
+        Đang tải danh sách phim...
+    </div>
+
+    <script>
+        fetch('http://localhost:8080/ticker-booking/movie') // đổi thành API của bạn
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                
+                const list = document.getElementById('movie-list');
+                list.innerHTML = ''; // Xóa dòng "Đang tải..."
+
+                data.forEach(movie => {
+                    const div = document.createElement('div');
+                    div.className = 'movie';
+                    div.onclick = () => {
+                        localStorage.setItem('movieId', movie._id); // Lưu ID phim vào localStorage
+                        location.href = `detail.html?movie=${movie._id}&name=${movie.title}`;
+                    };
+
+                    div.innerHTML = `
+                        <img src="${movie.poster}" alt="${movie.title}">
+                        <strong>${movie.title}</strong>
+                    `;
+
+                    list.appendChild(div);
+                });
+            })
+            .catch(err => {
+                document.getElementById('movie-list').innerHTML = 'Lỗi khi tải danh sách phim.';
+                console.error(err);
+            });
+    </script>
+</body>
+
+</html>

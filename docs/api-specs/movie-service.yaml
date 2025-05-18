@@ -1,0 +1,198 @@
+openapi: 3.0.0
+paths:
+  /movie:
+    post:
+      operationId: MovieController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MovieDTO'
+      responses:
+        '201':
+          description: ''
+      summary: create 1 movie
+      tags: &ref_0
+        - Movie
+    get:
+      operationId: MovieController_findAll
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      summary: find All  movies
+      tags: *ref_0
+  /cinema:
+    get:
+      operationId: CinemaController_findAll
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      summary: findAll cinema
+      tags: &ref_1
+        - Cinema
+    post:
+      operationId: CinemaController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CinemaDTO'
+      responses:
+        '201':
+          description: ''
+      summary: create cinema
+      tags: *ref_1
+  /theater:
+    post:
+      operationId: TheaterController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TheaterDTO'
+      responses:
+        '201':
+          description: ''
+      summary: create theater
+      tags: &ref_2
+        - Theater
+    get:
+      operationId: TheaterController_findAllOfCinemaId
+      parameters:
+        - name: cinemaId
+          required: false
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      summary: find all theater of cinemaId
+      tags: *ref_2
+  /show-time:
+    get:
+      operationId: ShowTimeController_getAll
+      parameters:
+        - name: movieId
+          required: false
+          in: query
+          schema:
+            example: 3213nnnn13n123
+            type: string
+        - name: cinemaId
+          required: false
+          in: query
+          schema:
+            example: 3213nnnn13n123
+            type: string
+      responses:
+        '200':
+          description: ''
+      summary: find showtime with cinemaId and movieId
+      tags: &ref_3
+        - ShowTime
+    post:
+      operationId: ShowTimeController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ShowTimeDTO'
+      responses:
+        '201':
+          description: ''
+      summary: create showtime
+      tags: *ref_3
+info:
+  title: Movie service
+  description: cung cap các dịch vụ về phim rạp
+  version: '1.0'
+  contact: {}
+tags: []
+servers: []
+components:
+  schemas:
+    MovieDTO:
+      type: object
+      properties:
+        title:
+          type: string
+          description: title of movie
+          example: mắt biếc
+        description:
+          type: string
+          description: description of movie
+          example: ''
+        duration:
+          type: string
+          description: duration of movie
+          example: ''
+        posterUrl:
+          type: string
+          description: posterUrl of movie
+          example: ''
+        genre:
+          type: string
+          description: genre of movie
+          example: ''
+        rating:
+          type: string
+          description: rating of movie
+          example: '1'
+      required:
+        - title
+        - description
+        - duration
+        - posterUrl
+        - genre
+        - rating
+    CinemaDTO:
+      type: object
+      properties:
+        name:
+          type: string
+          example: beta hà đông
+        address:
+          type: string
+          example: km10 nguyễn traaix hà đông hà nội
+      required:
+        - name
+        - address
+    TheaterDTO:
+      type: object
+      properties:
+        name:
+          type: string
+          example: P01
+        cinemaId:
+          type: string
+          example: 6814c3bcc81e00be4c556c67
+      required:
+        - name
+        - cinemaId
+    ShowTimeDTO:
+      type: object
+      properties:
+        movieId:
+          type: string
+          example: 14214n412n4n14n1
+        theaterId:
+          type: string
+          example: 14214n412n4n14n1
+        time:
+          type: string
+          example: YYYY-MM-DD HH:mm:ss
+      required:
+        - movieId
+        - theaterId
+        - time

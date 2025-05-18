@@ -1,0 +1,157 @@
+services:
+  movieservice:
+    build:
+      context: ./services/movie-service
+      dockerfile: Dockerfile
+    container_name: movieservice
+    env_file:
+      - .env
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./services/movie-service:/app/movieservice
+      - /app/movieservice/node_modules
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    restart: always
+    ports:
+      - 5672:5672
+      - 15672:15672
+    env_file:
+      - .env
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASWORD}
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq # Lưu trữ dữ liệu bền vững
+
+  bookingservice:
+    build:
+      context: ./services/booking-service
+      dockerfile: Dockerfile
+    container_name: bookingservice
+    env_file:
+      - .env
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_TTL=5000
+    ports:
+      - '3005:3005'
+    depends_on:
+      - rabbitmq
+      - redis-cache
+    volumes:
+      - ./services/booking-service:/app/bookingservice
+      - /app/bookingservice/node_modules
+
+  gateway:
+    build:
+      context: ./gateway
+      dockerfile: Dockerfile
+    container_name: gateway
+    env_file:
+      - .env
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./gateway:/app/gateway
+      - /app/gateway/node_modules
+
+  ticket-service:
+    build:
+      context: ./services/ticket-service
+      dockerfile: Dockerfile
+    container_name: ticket-service
+    env_file:
+      - .env
+    ports:
+      - '3003:3003'
+    depends_on:
+      - rabbitmq
+    volumes:
+      - ./services/ticket-service:/app/ticket-service
+      - /app/ticket-service/node_modules
+
+  customer-service:
+    build:
+      context: ./services/customer-service
+      dockerfile: Dockerfile
+    container_name: customer-service
+    env_file:
+      - .env
+    ports:
+      - '3004:3004'
+
+    volumes:
+      - ./services/customer-service:/app/customer-service
+      - /app/customer-service/node_modules
+
+  seat-service:
+    depends_on:
+      - mysql
+      - rabbitmq
+    build:
+      context: services/seat-service
+    ports:
+      - "3002:3002"
+    container_name: seat-service-1
+    env_file:
+      - .env
+
+  notification-service:
+    depends_on:
+      - rabbitmq
+    build:
+      context: services/notification-service
+    ports:
+      - "3006:3006"
+    container_name: notification-service
+    env_file:
+      - .env
+
+  payment-service:
+    depends_on:
+      - rabbitmq
+    build:
+      context: services/payment-service
+    ports:
+      - "3007:3007"
+    container_name: payment-service
+    env_file:
+      - .env
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - '3306:3306'
+    volumes:
+      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - mysql_data:/var/lib/mysql
+
+  redis-cache:
+    image: redis/redis-stack-server:latest
+    # Sử dụng image Redis mới nhất
+    container_name: redis-cache
+    restart: unless-stopped # Redis sẽ tự động khởi động lại trừ khi dừng thủ công
+    ports:
+      - '6379:6379' # Ánh xạ cổng Redis vào máy chủ
+    volumes:
+      - redis_data:/data # Sử dụng volume để lưu trữ dữ liệu Redis
+
+volumes:
+  rabbitmq_data:
+  redis_data:
+  mysql_data:
+  mysql2_data:
+
+

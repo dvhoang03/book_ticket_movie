@@ -1,0 +1,219 @@
+openapi: 3.1.0
+info:
+  title: Seat-service document
+  description: Mo ta API-doc
+  license:
+    name: API License
+    url: 'https://google.com'
+  version: v1.0.0
+servers:
+  - url: 'http://localhost:3002'
+paths:
+  '/seats/seat/{seatId}':
+    put:
+      tags:
+        - Seat Controller
+      summary: Update seat's status
+      description: Cap nhat trang thai cho ngoi
+      operationId: updateStatus
+      parameters:
+        - name: seatId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+        - name: status
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ShowtimeSeat'
+  /seats/test-ticket:
+    post:
+      tags:
+        - Seat Controller
+      operationId: testSendTicket
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TicketEvent'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+  /seats/test-send:
+    post:
+      tags:
+        - Seat Controller
+      operationId: testSend
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SeatLockMessage'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/SeatLockResponse'
+  /seats/seat/add:
+    post:
+      tags:
+        - Seat Controller
+      summary: Add seat
+      description: Them cho ngoi
+      operationId: addShowtimeSeat
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddShowtimeSeatRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ShowtimeSeat'
+  '/seats/seat/{showtimeId}':
+    get:
+      tags:
+        - Seat Controller
+      summary: Get all seats by showtimeId
+      description: Lay tat ca cho ngoi theo showtimeId
+      operationId: getSeatsByShowtimeId
+      parameters:
+        - name: showtimeId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ShowtimeSeat'
+  '/seats/seat/{seatId}/status':
+    get:
+      tags:
+        - Seat Controller
+      summary: Get seat's status
+      description: Lay trang thai cho ngoi
+      operationId: getStatus
+      parameters:
+        - name: seatId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ShowtimeSeat'
+components:
+  schemas:
+    ShowtimeSeat:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        price:
+          type: number
+        status:
+          type: string
+          enum:
+            - AVAILABLE
+            - RESERVED
+            - BOOKED
+            - LOCKED
+        showtimeId:
+          type: integer
+          format: int32
+        chairId:
+          type: integer
+          format: int32
+        bookingId:
+          type: string
+        lockExpiredAt:
+          type: string
+          format: date-time
+    TicketEvent:
+      type: object
+      properties:
+        seatIds:
+          type: array
+          items:
+            type: integer
+            format: int32
+        customerId:
+          type: integer
+          format: int32
+        name:
+          type: string
+        email:
+          type: string
+        totalPrice:
+          type: integer
+          format: int64
+    SeatLockMessage:
+      type: object
+      properties:
+        bookingId:
+          type: string
+        seatIds:
+          type: array
+          items:
+            type: integer
+            format: int32
+        expiredAt:
+          type: integer
+          format: int32
+    SeatLockResponse:
+      type: object
+      properties:
+        status:
+          type: boolean
+    AddShowtimeSeatRequest:
+      type: object
+      properties:
+        price:
+          type: number
+        status:
+          type: string
+          enum:
+            - AVAILABLE
+            - RESERVED
+            - BOOKED
+            - LOCKED
+        showtimeId:
+          type: integer
+          format: int32
+        chairId:
+          type: integer
+          format: int32

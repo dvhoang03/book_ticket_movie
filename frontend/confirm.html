@@ -1,0 +1,47 @@
+<!-- Trang 4: Nhập thông tin người đặt -->
+<!-- confirm.html -->
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Xác nhận thông tin</title>
+</head>
+
+<body>
+    <h1>Xác nhận thông tin</h1>
+    <div id="info"></div>
+    <form id="booking-form">
+        <input type="text" name="name" placeholder="Họ tên" required><br>
+        <input type="email" name="email" placeholder="Email" required><br>
+        <input type="tel" name="phone" placeholder="Số điện thoại" required><br>
+        <button type="submit">Tiếp tục</button>
+    </form>
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const movieId = params.get('movie');
+        const movieName = params.get('name');
+        const cinema = params.get('cinema');
+        const time = params.get('time');
+        const seats = params.get('seats');
+        const totalPrice = params.get('totalPrice'); 
+        // Giả sử giá vé là 50,000 VND
+
+        document.getElementById('info').innerText = `Phim: ${movieName}\nRạp: ${cinema}\nSuất: ${time}\nGhế: ${seats}\nGiá: ${totalPrice} VND`;
+
+        document.getElementById('booking-form').onsubmit = (e) => {
+            e.preventDefault();
+            const name = e.target.name.value;
+            const email = e.target.email.value;
+            const phone = e.target.phone.value;
+
+            localStorage.setItem('name', name);
+            localStorage.setItem('email', email);
+            localStorage.setItem('phone', phone);
+
+            window.location.href = `done.html?movie=${movieId}&cinema=${cinema}&time=${time}&seats=${seats}&totalPrice=${totalPrice}&name=${name}&email=${email}&phone=${phone}`;
+        }
+    </script>
+</body>
+
+</html>

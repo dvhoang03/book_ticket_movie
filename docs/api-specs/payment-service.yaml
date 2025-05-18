@@ -1,0 +1,63 @@
+openapi: 3.1.0
+info:
+  title: Payment-service document
+  description: Mo ta API-doc
+  license:
+    name: API License
+    url: 'https://google.com'
+  version: v1.0.0
+servers:
+  - url: 'http://localhost:3007'
+paths:
+  /payment/vn-pay:
+    get:
+      tags:
+        - payment-controller
+      operationId: pay
+      parameters:
+        - name: bookingId
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: amount
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: bankCode
+          in: query
+          required: false
+          schema:
+            type: string
+            default: NCB
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/VNPayResponse'
+  /payment/vn-pay-callback:
+    get:
+      tags:
+        - payment-controller
+      operationId: payCallbackHandler
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+components:
+  schemas:
+    VNPayResponse:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        paymentUrl:
+          type: string

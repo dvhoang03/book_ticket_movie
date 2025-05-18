@@ -1,0 +1,110 @@
+openapi: 3.0.0
+paths:
+  /ticker-booking/movie:
+    get:
+      operationId: TickerBookingController_findAllFilms
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      summary: find All  movies
+      tags: &ref_0
+        - TickerBooking
+  /ticker-booking/cinema:
+    get:
+      operationId: TickerBookingController_findAllCimemas
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      summary: findAll cinema
+      tags: *ref_0
+  /ticker-booking/showtime:
+    get:
+      operationId: TickerBookingController_findShowtime
+      parameters:
+        - name: movieId
+          required: false
+          in: query
+          schema:
+            example: ''
+            type: string
+        - name: cinemaId
+          required: false
+          in: query
+          schema:
+            example: ''
+            type: string
+      responses:
+        '200':
+          description: ''
+      summary: find showtime with cinemaId and movieId
+      tags: *ref_0
+  /ticker-booking/seat/{showtimeId}:
+    get:
+      operationId: TickerBookingController_finseat
+      parameters:
+        - name: showtimeId
+          required: true
+          in: path
+          schema:
+            example: ab23bda
+            type: string
+      responses:
+        '200':
+          description: ''
+      summary: find seat with showtime id
+      tags: *ref_0
+  /ticker-booking/booking:
+    post:
+      operationId: TickerBookingController_get
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookingRequestDTO'
+      responses:
+        '201':
+          description: ''
+      summary: xử lí yêu cầu đặt vé
+      tags: *ref_0
+info:
+  title: gateway movie booking ticket
+  description: gateway to book ticke
+  version: '1.0'
+  contact: {}
+tags: []
+servers: []
+components:
+  schemas:
+    BookingRequestDTO:
+      type: object
+      properties:
+        seatIds:
+          description: Danh sách các ghế được chọn để đặt vé
+          example:
+            - A1
+            - A2
+            - B1
+          type: array
+          items:
+            type: string
+        name:
+          type: string
+          description: Tên của khách hàng đặt vé
+          example: Nguyễn Văn A
+        phone:
+          type: string
+          description: Số điện thoại của khách hàng
+          example: '0123456789'
+        email:
+          type: string
+          description: Email của khách hàng
+          example: duongviethoang240803@gmail.com
+      required:
+        - seatIds
+        - name
+        - phone
+        - email

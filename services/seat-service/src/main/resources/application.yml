@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: seat-service
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  datasource:
+    url: ${DBMS_CONNECTION:jdbc:mysql://localhost:3306/seat_service_db}
+    driverClassName: "com.mysql.cj.jdbc.Driver"
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:1}
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
+    virtual-host: /
+
+
+server:
+  port: 3002
+
+open:
+  api:
+    title: "Seat-service document"
+    version: "v1.0.0"
+    description: "Mo ta API-doc"
+    serverUrl: "http://localhost:3002"
+

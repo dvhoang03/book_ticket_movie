@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: seat-service
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  datasource:
+    url: "jdbc:mysql://my-sql:3306/seat_service_db"
+    username: "root"
+    password: "1"
+
+server:
+  port: 8081

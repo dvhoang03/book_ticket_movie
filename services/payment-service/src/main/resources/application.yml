@@ -1,0 +1,30 @@
+spring:
+  application:
+  name: payment-service
+
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
+    virtual-host: /
+
+server:
+  port: 3007
+
+payment:
+  vnPay:
+    url: ${PAY_URL:https://sandbox.vnpayment.vn/paymentv2/vpcpay.html}
+    tmnCode: ${TMN_CODE:5P47R6ZT}
+    secretKey: ${SECRET_KEY:47S3UVHE9QPX665UHLL4Q1B5E28BZ64B}
+    returnUrl: ${RETURN_URL:http://localhost:3007/payment/vn-pay-callback}
+    version: ${VERSION:2.1.0}
+    command: ${COMMAND:pay}
+    orderType: ${ORDER_TYPE:other}
+
+open:
+  api:
+    title: "Payment-service document"
+    version: "v1.0.0"
+    description: "Mo ta API-doc"
+    serverUrl: "http://localhost:3007"

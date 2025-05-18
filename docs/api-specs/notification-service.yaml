@@ -1,0 +1,101 @@
+openapi: 3.1.0
+info:
+  title: Notification-service document
+  description: Mo ta API-doc
+  license:
+    name: API License
+    url: 'https://google.com'
+  version: v1.0.0
+servers:
+  - url: 'http://localhost:3006'
+paths:
+  /notification:
+    post:
+      tags:
+        - notification-controller
+      operationId: sendPaymentSuccessEmail
+      parameters:
+        - name: email
+          in: query
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TicketInfo'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /notification/rabbit:
+    post:
+      tags:
+        - notification-controller
+      operationId: sendEmail
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TicketEvent'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+components:
+  schemas:
+    TicketInfo:
+      type: object
+      properties:
+        ticketId:
+          type: string
+        movieTitle:
+          type: string
+        cinemaName:
+          type: string
+        roomName:
+          type: string
+        seatNumber:
+          type: string
+        showTime:
+          type: string
+          format: date-time
+        customerName:
+          type: string
+        customerEmail:
+          type: string
+        customerPhone:
+          type: string
+        price:
+          type: number
+          format: double
+        bookingTime:
+          type: string
+          format: date-time
+    TicketEvent:
+      type: object
+      properties:
+        seatIds:
+          type: array
+          items:
+            type: integer
+            format: int32
+        customerId:
+          type: integer
+          format: int32
+        name:
+          type: string
+        email:
+          type: string
+        totalPrice:
+          type: integer
+          format: int64

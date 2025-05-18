@@ -1,0 +1,56 @@
+openapi: 3.0.0
+paths:
+  /booking:
+    post:
+      operationId: AppController_get
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookingRequestDTO'
+      responses:
+        '201':
+          description: ''
+      summary: xử lí yêu cấu đặt vé
+      tags:
+        - App
+info:
+  title: Booking service
+  description: xử lí đặt vé
+  version: '1.0'
+  contact: {}
+tags: []
+servers: []
+components:
+  schemas:
+    BookingRequestDTO:
+      type: object
+      properties:
+        seatIds:
+          description: Danh sách các ghế được chọn để đặt vé
+          example:
+            - A1
+            - A2
+            - B1
+          type: array
+          items:
+            type: string
+        name:
+          type: string
+          description: Tên của khách hàng đặt vé
+          example: Nguyễn Văn A
+        phone:
+          type: string
+          description: Số điện thoại của khách hàng
+          example: '0123456789'
+        email:
+          type: string
+          description: Email của khách hàng
+          example: duongviethoang240803@gmail.com
+      required:
+        - seatIds
+        - name
+        - phone
+        - email

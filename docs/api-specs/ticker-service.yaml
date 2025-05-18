@@ -1,0 +1,68 @@
+openapi: 3.0.0
+paths:
+  /ticket:
+    post:
+      operationId: AppController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TicketDTO'
+      responses:
+        '201':
+          description: ''
+      summary: create ticket
+      tags:
+        - ticket
+info:
+  title: API Documentation
+  description: >-
+    This API allows you to connect to tickerservice. API service is hosted at
+    http://localhost:3003/api
+  version: '1.0'
+  contact: {}
+tags: []
+servers: []
+components:
+  schemas:
+    TicketDTO:
+      type: object
+      properties:
+        seatIds:
+          description: Danh sách các ghế được chọn để đặt vé
+          example:
+            - A1
+            - A2
+            - B1
+          type: array
+          items:
+            type: string
+        name:
+          type: string
+          description: Tên của khách hàng đặt vé
+          example: Nguyễn Văn A
+        phone:
+          type: string
+          description: Số điện thoại của khách hàng
+          example: '0123456789'
+        email:
+          type: string
+          description: Email của khách hàng
+          example: duongviethoang240803@gmail.com
+        totalPrice:
+          type: number
+          description: tong tien cua ve
+          example: 100000
+        customerId:
+          type: string
+          description: id of customer
+          example: bbad12n
+      required:
+        - seatIds
+        - name
+        - phone
+        - email
+        - totalPrice
+        - customerId

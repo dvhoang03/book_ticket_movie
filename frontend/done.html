@@ -1,0 +1,92 @@
+<!-- Trang 5: Hoàn tất và thanh toán -->
+<!-- done.html -->
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Hoàn tất</title>
+</head>
+
+<body>
+    <h1>Hoàn tất đặt vé</h1>
+    <div id="summary"></div>
+    <button onclick="handlePayment()">Tiến hành thanh toán</button>
+    <button onclick="paymentSuccess()">Thanh toán</button>
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const movieId = params.get('movie');
+        const cinema = params.get('cinema');
+        const time = params.get('time');
+        const showtimeId = params.get('showtimeId');
+        const seats = params.get('seats')?.split(',');
+        const seatIds = seats.map(Number);
+        const name = params.get('name');
+        const email = params.get('email');
+        const phone = params.get('phone');
+        const totalPrice = params.get('totalPrice');
+        var bookingId = "";
+
+        const movieName = movieId == 1 ? "Người Nhện" : "Avatar";
+        const summary = `Phim: ${movieName}\nRạp: ${cinema}\nSuất: ${time}\nGhế: ${seats.join(', ')}\nTên: ${name}\nEmail: ${email}\nSĐT: ${phone}\nTổng: ${totalPrice} VND`;
+        document.getElementById('summary').innerText = summary;
+
+        function handlePayment() {
+            const bookingData = {
+                seatIds: seatIds,
+                name: name,
+                email: email,
+                phone: phone
+            };
+
+            console.log('Dữ liệu gửi đi:', bookingData);
+
+            fetch('http://localhost:8080/ticker-booking/booking', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(bookingData)
+            })
+                .then(response => {
+                    if (!response.ok) throw new Error('Lỗi khi gửi thông tin booking');
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Dữ liệu trả về:', data);
+                    bookingId = data.bookingId; // Lưu bookingId để sử dụng sau này
+                    localStorage.setItem('bookingId', bookingId); // Lưu bookingId vào localStorage
+                    // if (data.url) {
+                    //     window.location.href = data.url; // Redirect đến trang thanh toán
+                    // } else {
+                    //     alert('Không nhận được URL thanh toán');
+                    // }
+                })
+                .catch(error => {
+                    console.error('Lỗi khi tạo booking:', error);
+                    alert('Tạo booking thất bại!');
+                });
+        }
+
+        function paymentSuccess() {
+            console.log(bookingId);
+
+            const id = localStorage.getItem('bookingId');
+            
+            fetch(`http://localhost:3007/payment/vn-pay-callback?bookingId=${id}&status=00`) // chỉnh URL phù hợp
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Dữ liệu trả về:', data);
+                    alert('Thanh toán thành công!');
+                })
+                .catch(error => {
+                    console.error('Lỗi khi gọi API:', error);
+                    alert('Thanh toán thất bại!');
+                });
+            alert('Thanh toán thành công!')
+        }
+    </script>
+
+</body>
+
+</html>

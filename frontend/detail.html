@@ -1,0 +1,93 @@
+<!-- Trang 2: Chi tiết phim và chọn suất chiếu -->
+<!-- detail.html -->
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Chi tiết phim</title>
+    <style>
+        .cinema {
+            margin: 10px 0;
+        }
+
+        .showtimes {
+            margin-left: 20px;
+            color: green;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <h1 id="movie-name">Chi tiết phim</h1>
+    <div id="cinema-list"></div>
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const movieId = params.get('movie'); // movieId là ID thật, ví dụ: 68149aa2aa914107d3cdc420
+        const movieName = params.get('name');
+        // Đặt tên phim nếu bạn có logic cụ thể
+        console.log(movieId);
+
+        document.getElementById("movie-name").innerText = "Phim: " + movieName;
+
+        const cinemaContainer = document.getElementById("cinema-list");
+
+        // Bước 1: Gọi API lấy danh sách rạp
+        fetch("http://localhost:8080/ticker-booking/cinema")
+            .then(res => res.json())
+            .then(cinemas => {
+                console.log(cinemas);
+
+                cinemas.forEach(cinema => {
+                    const cinemaDiv = document.createElement("div");
+                    cinemaDiv.className = "cinema";
+                    cinemaDiv.innerText = "Rạp: " + cinema.name;
+
+                    console.log(cinema);
+
+
+                    // Bước 2: Gọi API lấy suất chiếu theo từng rạp
+                    fetch(`http://localhost:8080/ticker-booking/showtime?movieId=${movieId}&cinemaId=${cinema.id}`)
+                        .then(res => res.json())
+                        .then(showtimes => {
+                            if (showtimes.length === 0) {
+                                const emptyDiv = document.createElement("div");
+                                emptyDiv.innerText = "Không có suất chiếu.";
+                                emptyDiv.style.marginLeft = "20px";
+                                cinemaDiv.appendChild(emptyDiv);
+                            } else {
+                                showtimes.forEach(show => {
+                                    const timeStr = new Date(show.time).toLocaleTimeString('vi-VN', {
+                                        hour: '2-digit',
+                                        minute: '2-digit'
+                                    });
+
+                                    const timeDiv = document.createElement("div");
+                                    timeDiv.className = "showtimes";
+                                    timeDiv.innerText = timeStr;
+                                    timeDiv.onclick = () => goToSeat(cinema.id, cinema.name, show._id, timeStr); // dùng timeStr hoặc show.time tùy yêu cầu
+                                    cinemaDiv.appendChild(timeDiv);
+                                });
+
+                            }
+                        })
+                        .catch(err => {
+                            console.error("Lỗi showtime:", err);
+                        });
+
+                    cinemaContainer.appendChild(cinemaDiv);
+                });
+            })
+            .catch(err => {
+                console.error("Lỗi cinema:", err);
+            });
+
+        function goToSeat(cinemaId, cinemaName, showtimeId, time) {
+            window.location.href = `seat.html?movie=${movieId}&cinema=${cinemaName}&cinemaId=${cinemaId}&showtimeId=${showtimeId}&time=${time}`;
+        }
+    </script>
+
+</body>
+
+</html>
